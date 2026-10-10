@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ERP Business Management System</title>
+  <meta name="description" content="ERP Business Management System: a front-end prototype with inventory, purchasing, sales, employees and reports. No backend, no install.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%224%22 fill=%22%230d9488%22/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Animated interactive background (always behind everything) -->
+  <canvas id="bg" aria-hidden="true"></canvas>
+
+  <!-- Sign in / sign up -->
+  <section id="auth" class="auth" hidden>
+    <div class="auth-card">
+      <div class="auth-brand">
+        <span class="brand-mark" aria-hidden="true">E</span>
+        <div>
+          <h1>ERP Business Management System</h1>
+          <p class="muted">Inventory, purchasing, sales, people and reports in one place.</p>
+        </div>
+      </div>
+
+      <div class="auth-tabs" role="tablist">
+        <button type="button" role="tab" id="tab-login" aria-selected="true" data-tab="login">Sign in</button>
+        <button type="button" role="tab" id="tab-signup" aria-selected="false" data-tab="signup">Create account</button>
+        <span class="auth-indicator" aria-hidden="true"></span>
+      </div>
+
+      <form id="login-form" class="auth-form" novalidate>
+        <label>Email<input name="email" type="email" autocomplete="email" required></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+        <label class="check"><input type="checkbox" name="remember" checked> Keep me signed in on this device</label>
+        <p class="form-error" id="login-error" hidden></p>
+        <button class="btn primary big" type="submit">Sign in</button>
+        <button class="btn big demo-btn" type="button" id="demo-btn">Try the demo account</button>
+        <p class="muted small">Demo login: demo@example.com / demo1234</p>
+      </form>
+
+      <form id="signup-form" class="auth-form" novalidate hidden>
+        <label>Full name<input name="name" autocomplete="name" required></label>
+        <label>Business name<input name="business" autocomplete="organization" required></label>
+        <label>Email<input name="email" type="email" autocomplete="email" required></label>
+        <label>Password<input name="password" type="password" autocomplete="new-password" required></label>
+        <div class="strength" aria-hidden="true"><span></span></div>
+        <small class="muted">At least 8 characters, with a letter and a number.</small>
+        <p class="form-error" id="signup-error" hidden></p>
+        <button class="btn primary big" type="submit">Create account</button>
+      </form>
+      <p class="auth-foot muted small">Prototype: sample data is fictional and accounts live only in this browser. Not secure for real business data.</p>
+    </div>
+  </section>
+
+  <!-- Application shell (shown after sign in) -->
+  <div class="app" id="app" hidden>
+    <!-- Bootstrap offcanvas: a slide-in menu on phones and tablets, a fixed column on large screens -->
+    <aside id="sidebar" class="offcanvas offcanvas-start offcanvas-lg" tabindex="-1" aria-label="Main navigation">
+      <div class="offcanvas-header d-lg-none">
+        <h2 class="offcanvas-title h5">Menu</h2>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close menu"></button>
+      </div>
+      <div class="offcanvas-body sidebar-body">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">E</span>
+          <span>ERP Business<br>Management System</span>
+        </div>
+        <nav id="nav"></nav>
+        <div class="side-note">
+          <strong>Prototype</strong>
+          Sample data is fictional. Accounts are stored only in this browser and are not secure for real business data.
+        </div>
+        <button type="button" class="btn ghost sm side-signout" data-signout>Sign out of this device</button>
+      </div>
+    </aside>
+
+    <div id="main-wrap" class="main-wrap">
+      <header class="topbar">
+        <button id="menu" class="icon-btn d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Open menu">☰</button>
+        <a class="icon-btn apps-btn d-none d-lg-inline-flex" href="#/overview/dashboard" aria-label="All apps" title="All apps">⋮⋮</a>
+        <div id="crumbs" class="crumbs"></div>
+        <div class="top-actions">
+          <button id="palette-btn" class="btn ghost sm kbd-btn" aria-label="Open command palette">
+            <span class="label">Search or jump to</span> <span class="kbd">Ctrl K</span>
+          </button>
+          <button id="live" class="live-pill" aria-pressed="false" title="Simulate incoming orders, stock and check-ins every few seconds"><span class="dot" aria-hidden="true"></span>Live</button>
+          <button id="bell" class="icon-btn" aria-label="Notifications">🔔<span id="bell-count" class="bell-count" hidden>0</span></button>
+          <button id="theme" class="icon-btn" aria-label="Toggle dark mode">◐</button>
+          <span class="dept-chip d-none d-lg-inline-flex" id="dept-chip">Dashboard</span>
+          <span class="user-chip d-none d-xl-inline" id="user-chip"></span>
+          <button type="button" class="btn ghost sm" data-signout>Sign out</button>
+        </div>
+      </header>
+      <main id="main"></main>
+    </div>
+  </div>
+
+  <!-- Load order matters: data layer, auth, UI kit, app shell, screens, then the screens register with it -->
+  <script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/background.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/crud.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/pages-inventory.js"></script>
+  <script src="js/pages-trade.js"></script>
+  <script src="js/pages-people.js"></script>
+  <script src="js/pages-overview.js"></script>
+  <script src="js/ext-core.js"></script>
+  <script src="js/ext-sales.js"></script>
+  <script src="js/ext-ops.js"></script>
+  <script src="js/ext-docs.js"></script>
+  <script src="js/home.js"></script>
+  <script src="js/auth-ui.js"></script>
+</body>
+</html>
