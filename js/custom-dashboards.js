@@ -109,6 +109,7 @@
     UI.head(board.name, `${board.widgets.length} widget(s)`, `
       <select class="form-select" data-add aria-label="Add widget" style="width:auto;max-width:100%">
         <option value="">+ Add widget</option>${metricOptions()}</select>
+      <a class="btn ghost" href="#/custom/import">⤓ Import data</a>
       <button class="btn ghost" data-export>Export</button>
       <button class="btn ghost" data-del>Delete dashboard</button>`);
     el.querySelector('[data-export]').onclick = () => exportBoard(board);
@@ -161,6 +162,7 @@
           <form id="cd-new" class="auth-form" novalidate>
             <label>Name<input name="name" required maxlength="60" placeholder="e.g. Tata plant production"></label>
             <label>Start from<select name="preset" class="form-select">${presetOptions}</select></label>
+            <p class="muted small">No data yet? <a href="#/custom/import">Import it from a CSV first</a>, then come back here.</p>
             <p class="muted small">Widgets (tick to include; you can add or remove them later):</p>
             ${checkboxes}
             <p class="form-error" id="cd-error" hidden></p>
