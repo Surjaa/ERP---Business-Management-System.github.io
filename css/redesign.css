@@ -112,3 +112,6 @@ h1 { font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.1rem); line-height: 1.2; margin:
 #imp-map label { display: grid; gap: 4px; margin-bottom: 8px; }
 .import-link { white-space: nowrap; }
 @media (max-width: 575.98px) { .import-link { font-size: 0; padding: 8px 12px; } .import-link::before { content: "⤓"; font-size: 16px; } }
+
+/* "Add data to this dashboard" bar on module dashboards */
+.dash-import { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: -4px 0 14px; }
