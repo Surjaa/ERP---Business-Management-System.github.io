@@ -45,6 +45,7 @@
     main.appendChild(pageEl);
     try {
       r.render(pageEl);
+      if (window.ImportBar) window.ImportBar.attach(pageEl, current);
     } catch (err) {
       console.error(err);
       pageEl.insertAdjacentHTML('beforeend', `<div class="card"><h3>Something went wrong</h3><p class="muted">${esc(err.message)}</p></div>`);
