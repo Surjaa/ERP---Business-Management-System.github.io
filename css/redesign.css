@@ -1,0 +1,112 @@
+/* redesign.css: layout and readability pass for phones and tablets.
+   Loaded after styles.css, so it only overrides what it names. Fonts: Manrope (headings) + Inter (body), already loaded in index.html. */
+
+:root {
+  --radius: 14px;
+  --radius-sm: 10px;
+  --surface: color-mix(in srgb, var(--panel) 94%, transparent);
+  --focus: 0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.55;
+  -webkit-text-size-adjust: 100%;
+}
+h1, h2, h3, h4, .kpi-value, .brand, .auth-brand h1 {
+  font-family: 'Manrope', 'Inter', system-ui, sans-serif;
+  letter-spacing: -.01em;
+}
+h1 { font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.1rem); line-height: 1.2; margin: 0; }
+
+/* Keep content readable over the animated 3D background: solid-enough surfaces, lighter blur. */
+.kpi, .card, .table-card {
+  background: var(--surface);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border-radius: var(--radius);
+}
+#bg3d { opacity: .55; }
+
+/* Buttons and inputs: consistent height and focus ring (keyboard + touch friendly) */
+.btn { min-height: 40px; border-radius: var(--radius-sm); }
+.btn:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible {
+  outline: none; box-shadow: var(--focus);
+}
+.form-select, .form-control, select, input[type="search"], input[type="text"] { min-height: 40px; border-radius: var(--radius-sm); }
+
+/* Top bar: one clean row on phones, Home stays a compact icon */
+.topbar { gap: 10px; }
+.topbar .home-btn { flex: 0 0 auto; }
+.topbar .top-actions { gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+
+/* Page heading: stack title and actions cleanly */
+.page-head { align-items: flex-start; margin-bottom: 14px; }
+.page-head .page-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Module tabs (Machines / Tickets): horizontal scroll instead of wrapping into a mess */
+.mod-nav { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+.mod-nav::-webkit-scrollbar { display: none; }
+.mod-nav .mod-link { flex: 0 0 auto; border-radius: 999px; padding: 8px 16px; }
+
+/* Tables: keep real columns, scroll the table inside its card on small screens */
+.table-card { overflow: hidden; }
+.table-toolbar { gap: 8px; padding: 12px; }
+.table-toolbar .search { min-width: 0; flex: 1 1 100%; max-width: none; }
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+.table-wrap table { min-width: 560px; width: 100%; }
+.table-wrap th, .table-wrap td { white-space: nowrap; }
+.table-wrap td:last-child { white-space: normal; }
+.table-foot { padding: 10px 12px; }
+
+/* Row action buttons wrap instead of overflowing the card */
+.table-wrap td .btn, .card-foot .btn { padding-top: 6px; padding-bottom: 6px; }
+.card-foot { flex-wrap: wrap; }
+
+/* Phones */
+@media (max-width: 575.98px) {
+  .content, main, .page { padding-left: 16px; padding-right: 16px; }
+  .grid { gap: 12px; }
+  .card, .kpi { padding: 14px 16px; }
+  .kpi-value { font-size: 1.5rem; }
+  .card-head { flex-wrap: wrap; }
+  .topbar .home-btn .home-label { display: none; }
+  #bg3d { opacity: .3; }
+  .kpi:hover, .card:hover { transform: none; }
+  /* Avoid the sticky header covering section headings when jumping to anchors */
+  [id] { scroll-margin-top: 72px; }
+}
+
+/* Touch devices: no hover lift */
+@media (hover: none) {
+  .kpi:hover, .card:hover { transform: none; }
+}
+
+/* Respect reduced motion for the new hover/focus transitions */
+@media (prefers-reduced-motion: reduce) {
+  .kpi, .card { transition: none; }
+}
+
+/* Dashboard builder */
+.cd-group { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 10px 12px; margin: 0 0 10px; }
+.cd-group legend { float: none; width: auto; font-size: 13px; font-weight: 600; padding: 0 6px; color: var(--muted); }
+.cd-group .check { display: flex; gap: 8px; align-items: center; margin: 4px 0; }
+.cd-switch { padding: 8px 0; border-bottom: 1px solid var(--line); }
+.cd-switch:last-child { border-bottom: 0; }
+.cd-switch .form-check-label { overflow-wrap: anywhere; }
+.cd-rm { margin-top: 6px; }
+@media (max-width: 575.98px) {
+  .page-head .form-select { width: 100% !important; }
+}
+/* Switches use the theme accent, not the default Bootstrap blue */
+.form-switch .form-check-input { background-color: var(--line); border-color: var(--line); cursor: pointer; }
+.form-switch .form-check-input:checked { background-color: var(--accent); border-color: var(--accent); }
+.form-switch .form-check-input:focus-visible { box-shadow: var(--focus); }
+.cd-switch .form-check-input { width: 2.6em; height: 1.4em; margin-top: .2em; }
+.cd-switch { padding-left: 3.4em; }
+.cd-switch .form-check-input { margin-left: -3.4em; }
+
+/* Import page */
+.file-pick { display: grid; gap: 6px; margin-bottom: 10px; }
+.file-pick input[type=file] { font: inherit; padding: 8px; border: 1px dashed var(--line); border-radius: var(--radius-sm); background: var(--panel); color: var(--ink); }
+#imp-map label { display: grid; gap: 4px; margin-bottom: 8px; }
