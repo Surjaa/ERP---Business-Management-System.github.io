@@ -37,7 +37,7 @@
   // CSV parser: handles quoted cells, commas and line breaks inside quotes
   function parseCSV(text) {
     const rows = []; let row = [], cell = '', q = false;
-    text = text.replace(/^﻿/, '');
+    text = text.replace(/^\uFEFF/, '');
     for (let i = 0; i < text.length; i++) {
       const c = text[i];
       if (q) { if (c === '"') { if (text[i + 1] === '"') { cell += '"'; i++; } else q = false; } else cell += c; }
@@ -52,11 +52,18 @@
   const fixDate = (v) => { const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec((v || '').trim()); return m ? `${m[3]}-${m[2]}-${m[1]}` : (v || '').trim(); };
 
   // ---------- page ----------
-  const state = { target: 'products', headers: [], rows: [], map: {}, fileName: '' };
+  const state = { target: 'products', headers: [], rows: [], map: {}, fileName: '', back: null };
 
   function importPage(el) {
-    UI.head('Import', 'Bring in a dashboard file or a CSV from your PMS, FMS or any sheet.');
+    // Opened from a dashboard: pre-select its data type and offer a way back
+    const preset = window.ERP_IMPORT_TARGET;
+    if (window.ERP_IMPORT_RETURN) state.back = window.ERP_IMPORT_RETURN;
+    window.ERP_IMPORT_TARGET = null; window.ERP_IMPORT_RETURN = null;
+    if (preset && TARGETS[preset]) { state.target = preset; state.map = {}; }
+    const back = state.back;
+    UI.head('Import', 'Bring in a CSV from your PMS, FMS or any sheet.');
     el.insertAdjacentHTML('beforeend', `
+      ${back ? `<p><a class="btn ghost sm" href="#/${back}">← Back to dashboard</a></p>` : ''}
       <div class="grid two">
         ${card('Import a dashboard file', `
           <p class="muted small">Choose a file you exported from Custom dashboards (.dashboard.json).</p>
@@ -172,6 +179,29 @@
     el.querySelector('#imp-map').innerHTML = `<p><strong>${added}</strong> ${esc(t.label.toLowerCase())} imported.</p>${summary}
       <p class="muted small">Open them from the ${esc(t.label)} screen in the sidebar.</p>`;
   }
+
+  // Adds an "Import data" button to each module dashboard (Sales, Inventory, Purchasing, ...)
+  const DATA_FOR_MODULE = {
+    sales: 'customers', inventory: 'products', purchasing: 'vendors', people: 'employees',
+    manufacturing: 'workOrders', maintenance: 'assets', fms: 'expenses', accounting: 'expenses',
+  };
+  window.ImportBar = {
+    attach(pageEl, key) {
+      if (key === 'overview/dashboard' || !/\/dashboard$/.test(key)) return;
+      const target = DATA_FOR_MODULE[key.split('/')[0]] || 'products';
+      const bar = document.createElement('div');
+      bar.className = 'dash-import';
+      bar.innerHTML = `<span class="muted small">Add data to this dashboard</span>
+        <button type="button" class="btn ghost sm" data-dash-import>⤓ Import CSV</button>`;
+      const head = pageEl.querySelector('.page-head');
+      head ? head.after(bar) : pageEl.prepend(bar);
+      bar.querySelector('[data-dash-import]').onclick = () => {
+        window.ERP_IMPORT_TARGET = target;
+        window.ERP_IMPORT_RETURN = key;
+        App.navigate('custom/import');
+      };
+    },
+  };
 
   App.register('custom/import', { group: null, label: 'Import', icon: '⤓', render: importPage });
 })();
