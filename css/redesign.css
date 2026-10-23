@@ -110,3 +110,5 @@ h1 { font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.1rem); line-height: 1.2; margin:
 .file-pick { display: grid; gap: 6px; margin-bottom: 10px; }
 .file-pick input[type=file] { font: inherit; padding: 8px; border: 1px dashed var(--line); border-radius: var(--radius-sm); background: var(--panel); color: var(--ink); }
 #imp-map label { display: grid; gap: 4px; margin-bottom: 8px; }
+.import-link { white-space: nowrap; }
+@media (max-width: 575.98px) { .import-link { font-size: 0; padding: 8px 12px; } .import-link::before { content: "⤓"; font-size: 16px; } }
